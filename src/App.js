@@ -7,16 +7,80 @@ class App extends Component {
     super(props);
     this.state = {
       gameState: [new Array(3), new Array(3), new Array(3)],
-      player: 0
+      player: 0,
+      moves: 0
     };
   }
+
+  gameChange = element => {
+    //changes
+    let newPlayer = this.state.player === 0 ? 1 : 0;
+    let row = parseInt(element.state.ID[0]);
+    let column = parseInt(element.state.ID[2]);
+    let currentArray = this.state.gameState;
+
+    //change element to checked
+    currentArray[row][column] = this.state.player;
+
+    this.setState(
+      {
+        player: newPlayer,
+        moves: this.state.moves + 1,
+        gameState: currentArray
+      },
+      function() {
+        if (this.checkWinner()) console.log("WINNER");
+      }
+    );
+  };
 
   buildInnerBox = (pirmaryBox, row) => {
     let innerBoard = [];
     for (let z = 0; z < pirmaryBox.length; z++) {
-      innerBoard.push(<BoxItem className="box-item" key={row + "/" + z} />);
+      innerBoard.push(
+        <BoxItem
+          player={this.state.player}
+          gameChange={this.gameChange}
+          className="box-item"
+          key={row + "" + z}
+          ID={row + "/" + z}
+        />
+      );
     }
     return innerBoard;
+  };
+
+  checkWinner = () => {
+    //Check if they have made so many moves
+    let length = this.state.gameState.length;
+    if (this.state.moves < length * 2 - 1) return false;
+
+    // Check if we have a winner
+    let state = this.state.gameState;
+    let possible = false;
+
+    //rows
+    state.forEach(el => {
+      if (!el.includes(undefined)) possible = true;
+    });
+    if (possible) return true;
+
+    let diagonalLeft = [];
+    let diagonalRight = [];
+
+    //columns and diagonals
+    for (let x = 0; x < length; x++) {
+      let column = [];
+      diagonalLeft.push(state[x][x]);
+      diagonalRight.push(state[length - x - 1][length - x - 1]);
+      for (let y = 0; y < length; y++) {
+        column.push(state[y][x]);
+      }
+      if (column.includes(undefined)) return false;
+    }
+    if (!diagonalLeft.includes(undefined) && !diagonalRight.includes(undefined))
+      return true;
+    else return false;
   };
 
   buildGameBoard = boxes => {

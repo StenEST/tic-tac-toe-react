@@ -4,8 +4,9 @@ class BoxItem extends Component {
     super(props);
     this.state = {
       checked: false,
-      player: 0,
-      alreadyChecked: false
+      alreadyChecked: false,
+      player: this.props.player,
+      ID: this.props.ID
     };
   }
 
@@ -23,12 +24,13 @@ class BoxItem extends Component {
   };
 
   makeChange = () => {
-    let playerSwitch = this.state.player === 0 ? 1 : 0;
+    if (this.state.alreadyChecked === true) return "";
     this.setState({
       checked: true,
-      player: playerSwitch,
-      alreadyChecked: true
+      alreadyChecked: true,
+      player: this.props.player
     });
+    this.props.gameChange(this);
   };
 
   render() {

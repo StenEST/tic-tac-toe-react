@@ -10,7 +10,8 @@ class App extends Component {
       gameState: [new Array(3), new Array(3), new Array(3)],
       player: 0,
       moves: 0,
-      gameOver: false
+      gameOver: false,
+      hasWinner: false
     };
   }
 
@@ -19,14 +20,20 @@ class App extends Component {
       gameState: [new Array(3), new Array(3), new Array(3)],
       player: 0,
       moves: 0,
-      gameOver: false
+      gameOver: false,
+      hasWinner: false
     });
   };
 
   buildGameBoard = boxes => {
     if (this.state.gameOver) {
-      console.log(this.state.player);
-      return <Menu startOver={this.newGame} winner={this.state.player} />;
+      return (
+        <Menu
+          startOver={this.newGame}
+          winner={this.state.player}
+          hasWinner={this.state.hasWinner}
+        />
+      );
     }
     let board = [];
     let row = 0;
@@ -74,7 +81,16 @@ class App extends Component {
         gameState: currentArray
       },
       function() {
-        if (this.checkWinner()) this.setState({ gameOver: true });
+        if (this.checkWinner()) {
+          this.setState({ gameOver: true, hasWinner: true });
+          return;
+        }
+        let notOver = false;
+        this.state.gameState.forEach(e => {
+          if (e.includes(undefined)) notOver = true;
+        });
+        if (notOver === false)
+          this.setState({ gameOver: true, hasWinner: false });
       }
     );
   };

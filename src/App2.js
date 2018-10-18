@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
 import BoxItem from "./components/BoxItem";
-import Menu from "./components/Menu";
 
 class App extends Component {
   constructor(props) {
@@ -9,25 +8,11 @@ class App extends Component {
     this.state = {
       gameState: [new Array(3), new Array(3), new Array(3)],
       player: 0,
-      moves: 0,
-      gameOver: false
+      moves: 0
     };
   }
 
-  newGame = () => {
-    this.setState({
-      gameState: [new Array(3), new Array(3), new Array(3)],
-      player: 0,
-      moves: 0,
-      gameOver: false
-    });
-  };
-
   buildGameBoard = boxes => {
-    if (this.state.gameOver) {
-      console.log(this.state.player);
-      return <Menu startOver={this.newGame} winner={this.state.player} />;
-    }
     let board = [];
     let row = 0;
     boxes.forEach(box => {
@@ -49,7 +34,7 @@ class App extends Component {
           player={this.state.player}
           gameChange={this.gameChange}
           className="box-item"
-          key={row + "/" + z}
+          key={row + "" + z}
           ID={row + "/" + z}
         />
       );
@@ -60,8 +45,8 @@ class App extends Component {
   gameChange = element => {
     //changes
     let newPlayer = this.state.player === 0 ? 1 : 0;
-    let row = parseInt(element.state.ID[0], 10);
-    let column = parseInt(element.state.ID[2], 10);
+    let row = parseInt(element.state.ID[0]);
+    let column = parseInt(element.state.ID[2]);
     let currentArray = this.state.gameState;
 
     //change element to checked
@@ -74,7 +59,8 @@ class App extends Component {
         gameState: currentArray
       },
       function() {
-        if (this.checkWinner()) this.setState({ gameOver: true });
+        if (this.checkWinner()) console.log("WINNER");
+        else false;
       }
     );
   };
@@ -90,9 +76,7 @@ class App extends Component {
 
     //rows
     state.forEach(el => {
-      if (!el.includes(undefined)) {
-        if (el[0] === el[1] && el[1] === el[2]) possible = true;
-      }
+      if (!el.includes(undefined)) possible = true;
     });
     if (possible) return true;
 
@@ -103,19 +87,13 @@ class App extends Component {
     for (let x = 0; x < length; x++) {
       let column = [];
       diagonalLeft.push(state[x][x]);
-      diagonalRight.push(state[x][length - x - 1]);
+      diagonalRight.push(state[length - x - 1][length - x - 1]);
       for (let y = 0; y < length; y++) {
         column.push(state[y][x]);
       }
-      if (column.includes(undefined)) continue;
-      if (column[0] === column[1] && column[1] === column[2]) return true;
+      if (column.includes(undefined)) return false;
     }
-    if (
-      (diagonalLeft[0] === diagonalLeft[1] &&
-        diagonalLeft[1] === diagonalLeft[2]) ||
-      (diagonalRight[0] === diagonalRight[1] &&
-        diagonalRight[1] === diagonalRight[2])
-    )
+    if (!diagonalLeft.includes(undefined) && !diagonalRight.includes(undefined))
       return true;
     else return false;
   };

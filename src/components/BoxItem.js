@@ -11,7 +11,7 @@ class BoxItem extends Component {
   }
 
   drawShape = () => {
-    if (this.state.checked === false) return "";
+    if (this.state.checked === false) return;
     let shape = [];
     let classID = this.state.player;
     if (classID === 0) {

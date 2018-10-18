@@ -53,3 +53,25 @@ body {
 .shapes {
   position: absolute;
 }
+/* Menu */
+.menu {
+  box-sizing: border-box;
+  position: relative;
+  width: 75%;
+  height: 50%;
+  margin: 0 auto;
+  margin-top: 25%;
+  background: #636363;
+  color: white;
+  text-align: center;
+  padding: 50px;
+}
+.menu > h2 {
+  text-transform: uppercase;
+}
+.menu > button {
+  padding: 10px 30px;
+  background: lightgreen;
+  border: 1px solid #ffffff;
+  text-transform: uppercase;
+}
